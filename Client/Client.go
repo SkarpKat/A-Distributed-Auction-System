@@ -24,7 +24,7 @@ func main() {
 	clientConnections := make([]Node.AuctionClient, len(nodePorts))
 
 	for i, port := range nodePorts {
-		conn, err := grpc.DialContext(ctx, "localhost:"+port, grpc.WithInsecure())
+		conn, err := grpc.DialContext(ctx, "localhost:"+port, grpc.WithInsecure(), grpc.WithBlock())
 		if err != nil {
 			log.Printf("Failed to dial to node with port: %v", err)
 		}
