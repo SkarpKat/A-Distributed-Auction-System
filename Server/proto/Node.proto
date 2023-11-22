@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option go_package = "github.com/SkarpKat/A-Distributed-Auction-System";
+
+package Auction;
+
+service Auction {
+    rpc Bid (BidRequest) returns (BidResponse) {}
+    rpc Result (ResultRequest) returns (ResultResponse) {}
+}
+
+message BidRequest {
+    string bidder = 1;
+    int32 bid = 2;
+}
+
+message BidResponse {
+    string bidder = 1;
+    int32 bid = 2;
+    string status = 3;
+}
+
+message ResultRequest {
+    string bidder = 1;
+    int32 bid = 2;
+}
+
+message ResultResponse {
+    string bidder = 1;
+    int32 bid = 2;
+    string status = 3;
+}
