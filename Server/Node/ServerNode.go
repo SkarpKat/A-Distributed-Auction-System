@@ -16,7 +16,7 @@ var (
 	nodePort = flag.String("port", "8080", "The port of the node")
 	isSlow   = flag.Bool("slow", false, "Whether the node is slow or not")
 	start    = false
-	duration = flag.Int("duration", 0, "The duration of the auction")
+	duration = flag.Int("duration", 0, "The duration of the auction in seconds")
 )
 
 type AuctionServer struct {
