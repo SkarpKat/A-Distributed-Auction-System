@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.3
-// source: Node.proto
+// source: Server/proto/Node.proto
 
 package A_Distributed_Auction_System
 
@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Auction_Bid_FullMethodName    = "/Auction.Auction/Bid"
+	Auction_Status_FullMethodName = "/Auction.Auction/Status"
 	Auction_Result_FullMethodName = "/Auction.Auction/Result"
 )
 
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuctionClient interface {
 	Bid(ctx context.Context, in *BidRequest, opts ...grpc.CallOption) (*BidResponse, error)
+	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	Result(ctx context.Context, in *ResultRequest, opts ...grpc.CallOption) (*ResultResponse, error)
 }
 
@@ -48,6 +50,15 @@ func (c *auctionClient) Bid(ctx context.Context, in *BidRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *auctionClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
+	out := new(StatusResponse)
+	err := c.cc.Invoke(ctx, Auction_Status_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *auctionClient) Result(ctx context.Context, in *ResultRequest, opts ...grpc.CallOption) (*ResultResponse, error) {
 	out := new(ResultResponse)
 	err := c.cc.Invoke(ctx, Auction_Result_FullMethodName, in, out, opts...)
@@ -62,6 +73,7 @@ func (c *auctionClient) Result(ctx context.Context, in *ResultRequest, opts ...g
 // for forward compatibility
 type AuctionServer interface {
 	Bid(context.Context, *BidRequest) (*BidResponse, error)
+	Status(context.Context, *StatusRequest) (*StatusResponse, error)
 	Result(context.Context, *ResultRequest) (*ResultResponse, error)
 	mustEmbedUnimplementedAuctionServer()
 }
@@ -72,6 +84,9 @@ type UnimplementedAuctionServer struct {
 
 func (UnimplementedAuctionServer) Bid(context.Context, *BidRequest) (*BidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Bid not implemented")
+}
+func (UnimplementedAuctionServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
 }
 func (UnimplementedAuctionServer) Result(context.Context, *ResultRequest) (*ResultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Result not implemented")
@@ -107,6 +122,24 @@ func _Auction_Bid_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auction_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuctionServer).Status(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auction_Status_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuctionServer).Status(ctx, req.(*StatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Auction_Result_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ResultRequest)
 	if err := dec(in); err != nil {
@@ -137,10 +170,14 @@ var Auction_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Auction_Bid_Handler,
 		},
 		{
+			MethodName: "Status",
+			Handler:    _Auction_Status_Handler,
+		},
+		{
 			MethodName: "Result",
 			Handler:    _Auction_Result_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Node.proto",
+	Metadata: "Server/proto/Node.proto",
 }
