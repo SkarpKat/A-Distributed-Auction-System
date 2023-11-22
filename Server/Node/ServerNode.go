@@ -51,7 +51,7 @@ func (s *AuctionServer) Status(ctx context.Context, in *Node.StatusRequest) (*No
 func (s *AuctionServer) Result(ctx context.Context, in *Node.ResultRequest) (*Node.ResultResponse, error) {
 	start = true
 
-	if start == true {
+	if start {
 		timer := *duration
 		time.Sleep(time.Duration(timer) * time.Second)
 	}
