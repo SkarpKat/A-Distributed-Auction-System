@@ -21,7 +21,7 @@ func main() {
 
 	flag.Parse()
 
-	connections := make([]*grpc.ClientConn, len(nodePorts))
+	clientConnections := make([]Node.AuctionClient, len(nodePorts))
 
 	for i, port := range nodePorts {
 		conn, err := grpc.DialContext(ctx, "localhost:"+port, grpc.WithInsecure())
@@ -29,12 +29,6 @@ func main() {
 			log.Printf("Failed to dial to node with port: %v", err)
 		}
 		defer conn.Close()
-		connections[i] = conn
-	}
-	clientConnections := make([]Node.AuctionClient, len(nodePorts))
-
-	// Create a new client
-	for i, conn := range connections {
 		clientConnections[i] = Node.NewAuctionClient(conn)
 	}
 
