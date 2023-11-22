@@ -132,10 +132,14 @@ func main() {
 					// Create wait group
 					wg := sync.WaitGroup{}
 
-					responses := make([]resultResponse, len(clientConnections))
+					// Create a slice of result responses
+					// responses := make([]resultResponse, len(clientConnections))
 
 					// Create mutex
-					arbiter := sync.Mutex{}
+					// arbiter := sync.Mutex{}
+
+					var winner string
+					var bid int64
 
 					for _, client := range clientConnections {
 						wg.Add(1)
@@ -146,28 +150,35 @@ func main() {
 							}
 							// Print the result of the auction
 							fmt.Printf("The winner is %s with a bid of %d\n", rsp.Bidder, rsp.Bid)
-							response := resultResponse{bidder: rsp.Bidder, bid: rsp.Bid, status: rsp.Status}
-							arbiter.Lock()
-							responses = append(responses, response)
-							arbiter.Unlock()
+
+							winner = rsp.Bidder
+							bid = rsp.Bid
+
+							// Add the response to the slice
+							// response := resultResponse{bidder: rsp.Bidder, bid: rsp.Bid, status: rsp.Status}
+							// arbiter.Lock()
+							// responses = append(responses, response)
+							// arbiter.Unlock()
 							wg.Done()
 						}(client)
 
 					}
 					wg.Wait()
 
-					for _, rsp := range responses {
-						// Print all responses
-						fmt.Printf("Bidder: %s, Bid: %d, Status: %s\n", rsp.bidder, rsp.bid, rsp.status)
+					// Check if all responses are the same and print the status
 
-						//Check if data is the same
-						if rsp.bidder != responses[0].bidder || rsp.bid != responses[0].bid || rsp.status != responses[0].status {
-							log.Printf("Error: Not all responses are the same")
-						}
-					}
+					// for _, rsp := range responses {
+					// 	// Print all responses
+					// 	fmt.Printf("Bidder: %s, Bid: %d, Status: %s\n", rsp.bidder, rsp.bid, rsp.status)
+
+					// 	//Check if data is the same
+					// 	if rsp.bidder != responses[0].bidder || rsp.bid != responses[0].bid || rsp.status != responses[0].status {
+					// 		log.Printf("Error: Not all responses are the same")
+					// 	}
+					// }
 
 					fmt.Printf("The auction is over\n")
-					fmt.Printf("The winner is %s with a bid of %d\n", responses[1].bidder, responses[1].bid)
+					fmt.Printf("The winner is %s with a bid of %d\n", winner, bid)
 
 				}()
 			}
