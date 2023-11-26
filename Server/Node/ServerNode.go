@@ -35,7 +35,19 @@ func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.Bid
 	// Print the recieved bid and bidder
 	fmt.Printf("Bid recieved: %d from %s\n", in.Bid, in.Bidder)
 
-	if in.Bid > s.currentbid && start {
+	if !start && s.status == "closed" {
+		start = true
+		s.status = "open"
+
+		go func() {
+			timer := *duration
+			time.Sleep(time.Duration(timer) * time.Second)
+			start = false
+			s.status = "closed"
+		}()
+	}
+
+	if in.Bid > s.currentbid && start && s.status == "open" {
 		s.currentbid = in.Bid
 		s.currentbidder = in.Bidder
 		return &Node.BidResponse{Bidder: s.currentbidder, Bid: s.currentbid, Status: s.status}, nil
@@ -44,28 +56,7 @@ func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.Bid
 	}
 }
 
-func (s *AuctionServer) Status(ctx context.Context, in *Node.StatusRequest) (*Node.StatusResponse, error) {
-	// Print the requester
-	fmt.Printf("Status requested by %s\n", in.Bidder)
-
-	if in.Bidder == s.currentbidder {
-		return &Node.StatusResponse{Bidder: s.currentbidder, Bid: s.currentbid, Status: s.status, Winner: true}, nil
-	} else {
-		return &Node.StatusResponse{Bidder: s.currentbidder, Bid: s.currentbid, Status: s.status, Winner: false}, nil
-	}
-}
-
 func (s *AuctionServer) Result(ctx context.Context, in *Node.ResultRequest) (*Node.ResultResponse, error) {
-	// Print the requester who joined the auction
-	fmt.Printf("%s has joined the auction\n", in.Bidder)
-	start = true
-
-	if start {
-		timer := *duration
-		time.Sleep(time.Duration(timer) * time.Second)
-	}
-
-	start = false
 
 	// Print the result of the auction
 	fmt.Printf("The winner is %s with a bid of %d\n", s.currentbidder, s.currentbid)
@@ -87,7 +78,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	AuctionServer := &AuctionServer{port: *nodePort, isSlow: *isSlow, currentbid: 0, currentbidder: "", status: "open"}
+	AuctionServer := &AuctionServer{port: *nodePort, isSlow: *isSlow, currentbid: 0, currentbidder: "", status: "closed"}
 
 	Node.RegisterAuctionServer(grpcServer, AuctionServer)
 

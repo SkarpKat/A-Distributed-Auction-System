@@ -6,7 +6,6 @@ package Auction;
 
 service Auction {
     rpc Bid (BidRequest) returns (BidResponse) {}
-    rpc Status (StatusRequest) returns (StatusResponse) {}
     rpc Result (ResultRequest) returns (ResultResponse) {}
 }
 
@@ -30,17 +29,6 @@ message ResultResponse {
     string bidder = 1;
     int64 bid = 2;
     string status = 3;
-}
-
-message StatusRequest {
-    string bidder = 1;
-}
-
-message StatusResponse {
-    string bidder = 1;
-    int64 bid = 2;
-    string status = 3;
-    bool winner = 4;
 }
 
 
