@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"time"
@@ -33,7 +34,7 @@ type AuctionServer struct {
 
 func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.BidResponse, error) {
 	// Print the recieved bid and bidder
-	fmt.Printf("Bid recieved: %d from %s\n", in.Bid, in.Bidder)
+	log.Printf("Bid recieved: %d from %s\n", in.Bid, in.Bidder)
 
 	if !start && s.status == "closed" {
 		start = true
@@ -43,8 +44,17 @@ func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.Bid
 			timer := *duration
 			time.Sleep(time.Duration(timer) * time.Second)
 			start = false
-			s.status = "closed"
+			s.status = "over"
+			s.currentbid = 0
+			s.currentbidder = ""
 		}()
+	}
+
+	if s.isSlow {
+		delay := rand.Int63n(5000)
+		log.Printf("Slow node sleeping for %d milliseconds\n", delay)
+		time.Sleep(time.Duration(delay) * time.Millisecond)
+		log.Printf("Slow node finished sleeping\n")
 	}
 
 	if in.Bid > s.currentbid && start && s.status == "open" {
@@ -59,12 +69,28 @@ func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.Bid
 func (s *AuctionServer) Result(ctx context.Context, in *Node.ResultRequest) (*Node.ResultResponse, error) {
 
 	// Print the result of the auction
-	fmt.Printf("The winner is %s with a bid of %d\n", s.currentbidder, s.currentbid)
+	log.Printf("Result request recieved from %s\n", in.Bidder)
+
+	if s.isSlow {
+		delay := rand.Int63n(5000)
+		log.Printf("Slow node sleeping for %d milliseconds\n", delay)
+		time.Sleep(time.Duration(delay) * time.Millisecond)
+		log.Printf("Slow node finished sleeping\n")
+	}
 
 	return &Node.ResultResponse{Bidder: s.currentbidder, Bid: s.currentbid, Status: s.status}, nil
 }
 
 func main() {
+
+	logPath := fmt.Sprintf("Client/Logs/Node%s.log", *nodePort)
+
+	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+
+	log.SetOutput(file)
 
 	flag.Parse()
 
@@ -92,19 +118,16 @@ func main() {
 			command := scanner.Text()
 			switch command {
 			case "currentbid":
-				fmt.Printf("Current bid is: %d\n", AuctionServer.currentbid)
+				log.Printf("Current bid is: %d\n", AuctionServer.currentbid)
 			case "currentbidder":
-				fmt.Printf("Current bidder is: %s\n", AuctionServer.currentbidder)
+				log.Printf("Current bidder is: %s\n", AuctionServer.currentbidder)
 			case "status":
-				fmt.Printf("Status is: %s and start bool is %v\n", AuctionServer.status, start)
-			case "start":
-				fmt.Printf("Starting auction\n")
-				AuctionServer.status = "open"
-				start = true
-			case "stop":
-				fmt.Printf("Stopping auction\n")
-				AuctionServer.status = "closed"
+				log.Printf("Status is: %s and start bool is %v\n", AuctionServer.status, start)
+			case "restart":
 				start = false
+				AuctionServer.status = "closed"
+				AuctionServer.currentbid = 0
+				AuctionServer.currentbidder = ""
 			case "shutdown":
 				os.Exit(0)
 			default:

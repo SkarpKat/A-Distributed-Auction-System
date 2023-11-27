@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	Node "github.com/SkarpKat/A-Distributed-Auction-System/Server/proto"
 	"google.golang.org/grpc"
@@ -14,8 +15,7 @@ import (
 
 var (
 	clientName = flag.String("name", "client", "The name of the client")
-	// clientID   = flag.Int("id", 0, "The ID of the client")
-	nodePorts = []string{"8080", "8081", "8082"}
+	nodePorts  = []string{"8080", "8081", "8082"}
 )
 
 func main() {
@@ -24,12 +24,22 @@ func main() {
 
 	flag.Parse()
 
+	logPath := fmt.Sprintf("Client/Logs/%s.log", *clientName)
+
+	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+
+	log.SetOutput(file)
+
 	clientConnections := make([]Node.AuctionClient, len(nodePorts))
 
 	for i, port := range nodePorts {
-		conn, err := grpc.Dial("localhost:"+port, grpc.WithInsecure(), grpc.WithBlock())
+		conn, err := grpc.Dial("localhost:"+port, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(60000*time.Millisecond))
 		if err != nil {
 			log.Printf("Failed to dial to node with port: %v", err)
+			continue
 		}
 		defer conn.Close()
 		clientConnections[i] = Node.NewAuctionClient(conn)
@@ -51,12 +61,6 @@ func main() {
 					log.Printf("Failed to read bid: %v", err)
 				}
 			}
-			// Read the bid from the user
-			// _, err := fmt.Scan(&bid)
-
-			// if err != nil {
-			// 	log.Printf("Failed to read bid: %v", err)
-			// }
 
 			winner := ""
 			winningBid := 0
@@ -73,13 +77,14 @@ func main() {
 			}
 
 			if winner == *clientName {
-				fmt.Printf("You are winning with a bid of %d\n", winningBid)
+				fmt.Printf("You are leading with a bid of %d kr.\n", winningBid)
 			} else {
-				fmt.Printf("Your bid of %d could not competet with %d from %v\n", bid, winningBid, winner)
+				fmt.Printf("Your bid of %d could not competet with %d kr. from %v\n", bid, winningBid, winner)
 			}
 		case "result":
 			winner := ""
 			winningBid := 0
+			state := ""
 			for _, client := range clientConnections {
 				rsp, err := client.Result(ctx, &Node.ResultRequest{Bidder: *clientName})
 				if err != nil {
@@ -88,13 +93,19 @@ func main() {
 				}
 				winner = rsp.Bidder
 				winningBid = int(rsp.Bid)
+				state = rsp.Status
 			}
 
-			if winner == *clientName {
-				fmt.Printf("You won with a bid of %d\n", winningBid)
+			if state == "closed" {
+				if winner == *clientName {
+					fmt.Printf("You won with a bid of %d\n", winningBid)
+				} else {
+					fmt.Printf("You lost to a bid of %d\n", winningBid)
+				}
 			} else {
-				fmt.Printf("You lost with a bid of %d\n", winningBid)
+				fmt.Printf("The auction is still open\n")
 			}
+
 		case "exit":
 			os.Exit(0)
 		default:
