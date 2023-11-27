@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	Node "github.com/SkarpKat/A-Distributed-Auction-System/Server/proto"
@@ -50,6 +51,7 @@ func main() {
 	fmt.Printf("Commands:\n bid - Bid on the auction\n result - Get the result of the auction\n exit - Exit the client\n")
 	for scanner.Scan() {
 		command := scanner.Text()
+		command = strings.ToLower(command)
 		switch command {
 		case "bid":
 			fmt.Printf("Enter the amount you would like to bid: ")
@@ -109,7 +111,7 @@ func main() {
 		case "exit":
 			os.Exit(0)
 		default:
-			fmt.Printf("Invalid command\n Commands:\n bid - Bid on the auction\n status - Get the status of the auction\n Join - Join the auction\n")
+			fmt.Printf("Invalid command\n Commands:\n bid - Bid on the auction\n result - Get's the result of the auction and tells if it's still going\n")
 		}
 
 	}

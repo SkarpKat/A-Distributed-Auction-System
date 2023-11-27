@@ -132,7 +132,7 @@ func main() {
 			case "shutdown":
 				os.Exit(0)
 			default:
-				fmt.Printf("Command not recognized\n Commands are: currentbid, currentbidder, status, shutdown\n")
+				fmt.Printf("Command not recognized\n Commands are: currentbid, currentbidder, status, restart, shutdown\n")
 			}
 		}
 	}()
