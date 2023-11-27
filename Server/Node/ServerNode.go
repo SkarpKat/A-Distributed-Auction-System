@@ -5,6 +5,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"net"
@@ -44,9 +45,8 @@ func (s *AuctionServer) Bid(ctx context.Context, in *Node.BidRequest) (*Node.Bid
 			timer := *duration
 			time.Sleep(time.Duration(timer) * time.Second)
 			start = false
-			s.status = "over"
-			s.currentbid = 0
-			s.currentbidder = ""
+			s.status = "closed"
+			log.Printf("Auction over\n")
 		}()
 	}
 
@@ -83,16 +83,16 @@ func (s *AuctionServer) Result(ctx context.Context, in *Node.ResultRequest) (*No
 
 func main() {
 
-	logPath := fmt.Sprintf("Client/Logs/Node%s.log", *nodePort)
+	flag.Parse()
+
+	logPath := fmt.Sprintf("Server/Logs/Node%s.log", *nodePort)
 
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		log.Fatalf("Failed to open log file: %v", err)
 	}
 
-	log.SetOutput(file)
-
-	flag.Parse()
+	log.SetOutput(io.MultiWriter(file, os.Stdout))
 
 	// Create a TCP listener on the specified address and port
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", *nodePort))
@@ -128,6 +128,7 @@ func main() {
 				AuctionServer.status = "closed"
 				AuctionServer.currentbid = 0
 				AuctionServer.currentbidder = ""
+				log.Printf("")
 			case "shutdown":
 				os.Exit(0)
 			default:

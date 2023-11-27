@@ -1,3 +1,7 @@
-2023/11/27 13:30:52 Failed to dial to node with port: context deadline exceeded
-2023/11/27 13:31:52 Failed to dial to node with port: context deadline exceeded
-2023/11/27 13:32:52 Failed to dial to node with port: context deadline exceeded
+2023/11/27 13:43:06 Failed to bid: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8082: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:45:25 Failed to read bid: strconv.ParseInt: parsing "9223372036854775808": value out of range
+2023/11/27 13:45:37 Failed to read bid: strconv.ParseInt: parsing "9223372036854775808": value out of range
+2023/11/27 13:47:18 Failed to read bid: strconv.ParseInt: parsing "9223372036854775808": value out of range
+2023/11/27 13:50:35 Failed to read bid: expected integer
+2023/11/27 13:51:03 Failed to read bid: strconv.ParseInt: parsing "9223372036854775808": value out of range
+2023/11/27 13:51:15 Failed to read bid: strconv.ParseInt: parsing "9223372036854775809": value out of range

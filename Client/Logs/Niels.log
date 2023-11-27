@@ -1,3 +1,7 @@
-2023/11/27 13:31:12 Failed to dial to node with port: context deadline exceeded
-2023/11/27 13:32:12 Failed to dial to node with port: context deadline exceeded
-2023/11/27 13:33:12 Failed to dial to node with port: context deadline exceeded
+2023/11/27 13:42:58 Failed to get result: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:42:58 Failed to get result: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8081: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:42:58 Failed to get result: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8082: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:46:22 Failed to read bid: expected integer
+2023/11/27 13:46:22 Failed to bid: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8081: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:46:22 Failed to bid: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8082: connectex: No connection could be made because the target machine actively refused it."
+2023/11/27 13:48:11 Failed to read bid: expected integer
