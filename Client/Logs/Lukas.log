@@ -1,0 +1,2 @@
+2023/11/28 20:16:38 Failed to bid: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8081: connectex: No connection could be made because the target machine actively refused it."
+2023/11/28 20:16:55 Failed to bid: rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing: dial tcp [::1]:8081: connectex: No connection could be made because the target machine actively refused it."

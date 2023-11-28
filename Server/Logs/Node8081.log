@@ -1,12 +1,6 @@
-2023/11/27 13:50:23 Server node listening on port 8081
-2023/11/27 13:50:29 Bid recieved: 9223372036854775807 from SusLukas
-2023/11/27 13:50:35 Bid recieved: 0 from Lukas
-2023/11/27 13:50:42 Bid recieved: 9223372036854775807 from Lukas
-2023/11/27 13:51:03 Bid recieved: 0 from Lukas
-2023/11/27 13:51:06 Bid recieved: 0 from SusLukas
-2023/11/27 13:51:15 Bid recieved: 0 from Lukas
-2023/11/27 13:51:29 Auction over
-2023/11/27 13:51:30 Bid recieved: 9223372036854775807 from SusLukas
-2023/11/27 13:52:30 Auction over
-2023/11/27 13:52:34 Result request recieved from Lukas
-2023/11/27 13:52:35 Result request recieved from SusLukas
+2023/11/28 20:15:34 Server node listening on port 8081
+2023/11/28 20:16:06 Bid recieved: 10 from ClientB
+2023/11/28 20:16:11 Bid recieved: 10 from ClientA
+2023/11/28 20:16:18 Bid recieved: 15 from ClientA
+2023/11/28 20:16:27 Bid recieved: 30 from ClientB
+2023/11/28 20:16:32 Bid recieved: 45 from ClientA
