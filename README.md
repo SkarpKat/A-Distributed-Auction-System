@@ -16,10 +16,10 @@ Here we will go over the client and how it's used
 #### Flags
 The Client is simple and the flags are as followed:
 - ```-name```: which is the name of the client.
-The ports are defined the code in an array. You can expand it if you want more nodes.
+The ports are defined in the code in an array. You can expand it if you want more nodes.
 #### Commands
 The commands the client can use in the terminal is:
-- ```bid```: this command make it possible to make a bid. After the command you will put the amount. You can not do ```bid 1000``` this will not work. If it's the first bid it will start the auction.
+- ```bid```: this command make it possible to make a bid. After the command you will put the amount. You can not do ```bid 1000```, this will not work. If it's the first bid it will start the auction.
 - ```result```: this will give the result of the auction. If the auction is still underway it will say so.
 - ```exit```: this will kill the client.
 ### Server node
